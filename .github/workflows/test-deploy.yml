@@ -24,6 +24,17 @@ jobs:
             sudo apt-get update && sudo apt-get install docker.io docker-compose-v2 -y
             sudo usermod -aG docker $USER && newgrp docker 
             mkdir -p production
-            echo "postive"
+            echo "postive" 
+# Logging successfully worked onto the next step
+  
+      - name: Copy the docker-compose file on server
+        uses: applyboy/scp-action@v1 
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: docker-compose.yml
+          path: ~/production
+
         
       
