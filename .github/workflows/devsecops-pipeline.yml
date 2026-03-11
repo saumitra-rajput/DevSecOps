@@ -34,20 +34,20 @@ jobs:
   ## Build and push once the security scans and tests are complete
 
   build-push:
-    needs: [ code-quality, secrets-scan, dependency-scan, docker-scan, test-scan ]
+    needs: [code-quality, secrets-scan, dependency-scan, docker-scan, test-scan]
     uses: ./.github/workflows/build-push.yml
     secrets: inherit
 
   ## image scan with Trivy
   image-scan: 
-    needs: [ build ]
+    needs: [build]
     uses: ./.github/workflows/image-scan.yml
     secrets: inherit
 
 # CD
   ## Deploy to Production
   test-deploy: 
-    needs: [ image-scan ]
+    needs: [image-scan]
     uses: ./.github/workflows/test-deploy.yml
     secrets: inherit
 
