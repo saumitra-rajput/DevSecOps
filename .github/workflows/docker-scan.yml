@@ -3,7 +3,7 @@
 name: docker-scan
 
 on:
-  workflow_call:
+  push:
 
 jobs: 
   scan-dockerfile:
@@ -15,4 +15,4 @@ jobs:
       - name: Validate Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: DOckerfile
+          dockerfile: Dockerfile
