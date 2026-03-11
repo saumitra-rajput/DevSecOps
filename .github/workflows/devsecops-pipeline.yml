@@ -15,7 +15,7 @@ jobs:
   
   ## Secret Scan with the # GitLeaks
   secrets-scan:
-    uses: ./.github/workflows/secret-scan.yml
+    uses: ./.github/workflows/secrets-scan.yml
     secrets: inherit
 
   ## Packages - issues or vulnerabilities (scan) with pip-audit
