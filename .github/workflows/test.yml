@@ -1,0 +1,24 @@
+# Run pytest on the Flask App
+
+name: test-run
+
+on: 
+  push:
+
+jobs:
+  test-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4 
+      
+      - name: setup python on version- 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install dependencies
+        run: pip install -r requirements.txt
+
+      - name: run pytest on Flask App
+        run: pytest app.py
