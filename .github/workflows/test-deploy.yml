@@ -28,7 +28,7 @@ jobs:
 # Logging successfully worked onto the next step
   
       - name: Copy the docker-compose file on server
-        uses: applyboy/scp-action@v1 
+        uses: appleboy/scp-action@v1 
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
