@@ -36,10 +36,15 @@ jobs:
           source: docker-compose.yml
           target: ~/production
       
-      - name: Run the docker-compose file
-        run: |
-          cd ~/production/
-          docker compose down && docker compose up -d --build --force-recreate --pull always
+      - name: SSH to EC2 server and Run the docker-compose file
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/production/
+            docker compose down && docker compose up -d --build --force-recreate --pull always
 
         
       
