@@ -17,11 +17,11 @@ jobs:
       - name: Docker login
         uses: docker/login-action@v3
         with:
-          username: ${{ vars.GITHUB_USER }}
-          password: ${{ secrets.GITHUB_SECRET }}
+          username: ${{ vars.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_SECRET }}
       - name: Build  and Push the image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ vars.GITHUB_USER }}/devsecop:${{ github.sha }}
+          tags: ${{ vars.DOCKERHUB_USER }}/devsecop:${{ github.sha }}
