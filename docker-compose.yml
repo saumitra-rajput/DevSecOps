@@ -6,6 +6,5 @@ services:
     # Updating docker-compose to pull the image from Dockerhub and with specific tag of SHA ID
     # LATER will define IMAGE_TAG: ${{ github.sha }} in deployment job
     image: ${DOCKERHUB_USER}/devsecops:${IMAGE_TAG}
-
     ports:
       - "80:80"
