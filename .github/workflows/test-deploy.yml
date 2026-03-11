@@ -4,7 +4,7 @@ name: Test-Deployment-to-server
 
 on: 
   workflow_run:
-    workflow: ["Build and Push"] 
+    workflows: ["Build and Push"] 
     types: [completed]
     branches: [main]
 
