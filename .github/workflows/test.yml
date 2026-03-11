@@ -21,4 +21,4 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: run pytest on Flask App
-        run: pytest app.py
+        run: pytest test_app.py -v
