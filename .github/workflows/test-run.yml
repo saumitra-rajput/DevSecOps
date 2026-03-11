@@ -3,7 +3,7 @@
 name: test-run
 
 on: 
-  push:
+  workflow_call:
 
 jobs:
   test-run:

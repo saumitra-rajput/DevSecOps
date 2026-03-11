@@ -3,7 +3,7 @@
 name: image-scan
 
 on: 
-  push:
+  workflow_call:
 
 jobs:
   image-scanner:
@@ -24,4 +24,6 @@ jobs:
           image-ref: ${{ vars.DOCKERHUB_USER }}/devsecops:${{ github.sha }}
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
+          
+
           

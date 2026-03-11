@@ -4,17 +4,51 @@
 
  on:
    push:
+     branches: [ main ]
 
 jobs:
+  
+# CI
+
+  ## Check the Code Quality using Flake8 and SAST - static analysis security testing 
   code-quality:
     uses: ./.github/workflows/code-quality.yml
   
+  ## Secret Scan with the # GitLeaks
   secrets-scan:
+    uses: ./.github/workflows/secret-scan.yml
+    secrets: inherit
 
+  ## Packages - issues or vulnerabilities (scan) with pip-audit
   dependency-scan:
+    uses: ./.github/workflows/dependency-scan.yml
 
+  ## Hadolint for Dockerfile scan
   docker-scan:
+    uses: ./.github/workflows/docker-scan.yml
+
+  ## Run pytest on the Flask App
+
+  test-run:
+    uses: ./.github/workflows/test-run.yml
+
+  ## Build and push once the security scans and tests are complete
 
   build-push:
+    needs: [ code-quality, secrets-scan, dependency-scan, docker-scan, test-scan ]
+    uses: ./.github/workflows/build-push.yml
+    secrets: inherit
 
-  
+  ## image scan with Trivy
+  image-scan: 
+    needs: [ build ]
+    uses: ./.github/workflows/image-scan.yml
+    secrets: inherit
+
+# CD
+  ## Deploy to Production
+  test-deploy: 
+    needs: [ image-scan ]
+    uses: ./.github/workflows/test-deploy.yml
+    secrets: inherit
+

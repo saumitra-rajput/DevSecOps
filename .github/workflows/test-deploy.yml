@@ -3,10 +3,11 @@
 name: Test-Deployment-to-server
 
 on: 
-  workflow_run:
-    workflows: ["Build and Push"] 
-    types: [completed]
-    branches: [main]
+  workflow_call:
+  # workflow_run:
+  #   workflows: ["Build and Push"] 
+  #   types: [completed]
+  #   branches: [main]
 
 jobs:
   deploy:
