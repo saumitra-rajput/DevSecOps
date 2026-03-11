@@ -1,0 +1,20 @@
+# DevSecOps-Pipeline
+ 
+ name: DevSecOps End to End Pipeline
+
+ on:
+   push:
+
+jobs:
+  code-quality:
+    uses: ./.github/workflows/code-quality.yml
+  
+  secrets-scan:
+
+  dependency-scan:
+
+  docker-scan:
+
+  build-push:
+
+  
