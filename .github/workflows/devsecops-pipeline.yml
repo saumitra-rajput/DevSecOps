@@ -1,13 +1,12 @@
 # DevSecOps-Pipeline
  
- name: DevSecOps End to End Pipeline
+name: DevSecOps End to End Pipeline
 
- on:
+on:
    push:
      branches: [ main ]
 
-jobs:
-  
+jobs: 
 # CI
 
   ## Check the Code Quality using Flake8 and SAST - static analysis security testing 
