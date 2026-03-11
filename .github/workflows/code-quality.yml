@@ -5,9 +5,7 @@
 name: code-quality
 
 on: 
-  push:
-    branches: [ main ]
-  # workflow_call:
+  workflow_call:
     
 jobs:
   valdiate: 
