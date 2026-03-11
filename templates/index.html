@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DevSecOps — Security Report</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #0a0f0a;
+      color: #b0ffd4;
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+
+    h1 { font-size: 22px; color: #00ff88; margin-bottom: 4px; }
+    .sub { color: #4a9967; font-size: 13px; margin-bottom: 32px; }
+
+    .overall {
+      padding: 16px 20px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 32px;
+    }
+    .overall.pass { background: rgba(0,255,136,0.1); border: 1px solid #00ff88; color: #00ff88; }
+    .overall.fail { background: rgba(255,68,85,0.1);  border: 1px solid #ff4455; color: #ff4455; }
+
+    table { width: 100%; border-collapse: collapse; margin-bottom: 36px; }
+    th { text-align: left; font-size: 11px; letter-spacing: 2px; color: #4a9967; padding-bottom: 8px; border-bottom: 1px solid #1a3a1a; }
+    td { padding: 12px 0; border-bottom: 1px solid #0f2a0f; font-size: 13px; }
+    td.status-pass { color: #00ff88; }
+    td.status-fail { color: #ff4455; }
+
+    .meta { font-size: 11px; color: #4a9967; line-height: 2; }
+    .meta span { color: #b0ffd4; }
+  </style>
+</head>
+<body>
+
+  <h1>🛡️ DevSecOps — Security Report</h1>
+  <div class="sub">Deployed on AWS EC2 · {{ meta.region }} · {{ meta.timestamp }}</div>
+
+  <!-- OVERALL RESULT -->
+  <div class="overall {% if summary.overall %}pass{% else %}fail{% endif %}">
+    {% if summary.overall %}
+      ✅ ALL CHECKS PASSED — Safe to deploy
+    {% else %}
+      ❌ {{ summary.failed }} CHECK(S) FAILED — Deployment blocked
+    {% endif %}
+  </div>
+
+  <!-- CHECK RESULTS TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>CHECK</th>
+        <th>STATUS</th>
+        <th>DETAIL</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for check in checks %}
+      <tr>
+        <td>{{ check.name }}</td>
+        <td class="{% if check.passed %}status-pass{% else %}status-fail{% endif %}">
+          {% if check.passed %}PASS{% else %}FAIL{% endif %}
+        </td>
+        <td>{{ check.detail }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- META INFO -->
+  <div class="meta">
+    <div>Checks passed &nbsp;: <span>{{ summary.passed }} / {{ summary.total }}</span></div>
+    <div>Instance type &nbsp;: <span>{{ meta.instance_type }}</span></div>
+    <div>Region &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span>{{ meta.region }}</span></div>
+    <div>Timestamp &nbsp;&nbsp;&nbsp;&nbsp;: <span>{{ meta.timestamp }}</span></div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    container_name: DevSecOps-Project
+    ports:
+      - "80:80"
