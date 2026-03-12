@@ -1,132 +1,705 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My DevSecOps Project</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DevSecOps | Gotham Pipeline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #050505;
+      --dark: #0a0a0f;
+      --panel: #0e0e16;
+      --border: #1a1a2e;
+      --yellow: #f0c420;
+      --yellow-dim: #b8941a;
+      --yellow-glow: rgba(240,196,32,0.15);
+      --yellow-glow2: rgba(240,196,32,0.05);
+      --red: #e63946;
+      --green: #2ecc71;
+      --blue: #4fc3f7;
+      --text: #c8c8d4;
+      --text-dim: #5a5a70;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e1e2f, #2d2d44);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            max-width: 600px;
-            margin: 20px;
-        }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
 
-        h1 {
-            color: #fff;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+    /* ── RAIN CANVAS ── */
+    #rain {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.18;
+    }
 
-        .badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            margin: 10px;
-        }
+    /* ── BAT SIGNAL ── */
+    .bat-signal {
+      position: fixed;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(240,196,32,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: signalPulse 4s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes signalPulse {
+      0%,100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.15); opacity: 1; }
+    }
 
-        .success {
-            background: #4CAF50;
-            color: white;
-        }
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 40px 60px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(10,10,15,0.98) 0%, transparent 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        .info {
-            background: #2196F3;
-            color: white;
-        }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
 
-        .message {
-            color: #ddd;
-            font-size: 1.2rem;
-            margin: 30px 0;
-            line-height: 1.6;
-        }
+    .bat-logo {
+      width: 64px;
+      height: 64px;
+      animation: batFloat 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 16px var(--yellow));
+    }
+    @keyframes batFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
 
-        .status-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
+    .title-block h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.2rem;
+      letter-spacing: 6px;
+      color: var(--yellow);
+      text-shadow: 0 0 30px rgba(240,196,32,0.6), 0 0 60px rgba(240,196,32,0.2);
+      line-height: 1;
+    }
 
-        .status-item {
-            color: #fff;
-            margin: 15px 0;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+    .title-block p {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
 
-        .status-item span {
-            color: #4CAF50;
-            font-weight: bold;
-        }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(46,204,113,0.08);
+      border: 1px solid rgba(46,204,113,0.3);
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--green);
+      letter-spacing: 2px;
+    }
 
-        .footer {
-            color: #888;
-            margin-top: 30px;
-            font-size: 0.9rem;
-        }
-    </style>
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* ── TOOLS BAR ── */
+    .tools-bar {
+      position: relative; z-index: 10;
+      padding: 16px 60px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tools-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-right: 12px;
+    }
+
+    .tool-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(240,196,32,0.05);
+      border: 1px solid rgba(240,196,32,0.2);
+      border-radius: 3px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--yellow-dim);
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .tool-chip:hover {
+      background: rgba(240,196,32,0.12);
+      border-color: var(--yellow);
+      color: var(--yellow);
+      box-shadow: 0 0 12px var(--yellow-glow);
+    }
+
+    /* ── MAIN PIPELINE ── */
+    main {
+      position: relative; z-index: 10;
+      padding: 50px 60px;
+    }
+
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ── PIPELINE FLOW ── */
+    .pipeline-flow {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--yellow-dim) transparent;
+    }
+
+    .pipeline-node {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .stage-card {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px 18px;
+      width: 190px;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .stage-card.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stage-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--yellow-glow2), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stage-card:hover {
+      border-color: var(--yellow);
+      box-shadow: 0 0 25px var(--yellow-glow), 0 8px 30px rgba(0,0,0,0.5);
+      transform: translateY(-4px);
+    }
+    .stage-card:hover::before { opacity: 1; }
+
+    .stage-card.matrix-card {
+      border-color: rgba(79,195,247,0.3);
+      width: 220px;
+    }
+    .stage-card.matrix-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 0 25px rgba(79,195,247,0.2), 0 8px 30px rgba(0,0,0,0.5);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .stage-icon {
+      font-size: 1.4rem;
+    }
+
+    .stage-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--green);
+    }
+    .stage-status .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+
+    .stage-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--yellow);
+      margin-bottom: 10px;
+    }
+    .matrix-card .stage-name { color: var(--blue); }
+
+    .job-list { list-style: none; }
+    .job-list li {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      padding: 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .job-list li::before {
+      content: '›';
+      color: var(--yellow-dim);
+      font-size: 0.9rem;
+    }
+    .matrix-card .job-list li::before { color: var(--blue); opacity: 0.6; }
+    .stage-card:hover .job-list li { color: var(--text); }
+
+    .matrix-badge {
+      margin-top: 10px;
+      background: rgba(79,195,247,0.08);
+      border: 1px solid rgba(79,195,247,0.2);
+      border-radius: 3px;
+      padding: 4px 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--blue);
+      letter-spacing: 1px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-footer {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .duration {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+    }
+
+    .progress-bar {
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      overflow: hidden;
+      flex: 1;
+      margin-left: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow-dim), var(--yellow));
+      width: 0%;
+      transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 0 6px var(--yellow);
+    }
+    .matrix-card .progress-fill {
+      background: linear-gradient(90deg, #1e7ca8, var(--blue));
+      box-shadow: 0 0 6px var(--blue);
+    }
+
+    /* ── CONNECTOR ARROW ── */
+    .connector {
+      display: flex;
+      align-items: center;
+      padding: 0 6px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .connector.revealed { opacity: 1; }
+
+    .arrow-line {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--border), var(--yellow-dim));
+      position: relative;
+    }
+    .arrow-line::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 7px solid var(--yellow-dim);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+
+    /* ── GLOW PULSE on arrows ── */
+    .arrow-animated {
+      animation: arrowFlow 2s linear infinite;
+    }
+    @keyframes arrowFlow {
+      0% { background: linear-gradient(90deg, var(--border), var(--yellow-dim)); }
+      50% { background: linear-gradient(90deg, var(--yellow-dim), var(--yellow)); box-shadow: 0 0 8px var(--yellow); }
+      100% { background: linear-gradient(90deg, var(--border), var(--yellow-dim)); }
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 50px;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s;
+    }
+    .stat-card.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .stat-card:hover {
+      border-color: rgba(240,196,32,0.4);
+      box-shadow: 0 0 20px var(--yellow-glow);
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: var(--yellow);
+      text-shadow: 0 0 20px rgba(240,196,32,0.4);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 10;
+      padding: 20px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+    }
+
+    .footer-bat {
+      font-size: 1.2rem;
+      filter: drop-shadow(0 0 8px var(--yellow));
+    }
+
+    /* ── SCAN LINE OVERLAY ── */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { height: 4px; width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--yellow-dim); border-radius: 2px; }
+
+    @media (max-width: 900px) {
+      header, .tools-bar, main, footer { padding-left: 20px; padding-right: 20px; }
+      .title-block h1 { font-size: 2rem; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 My DevSecOps Project</h1>
-        
-        <div>
-            <span class="badge success">✓ Security Checks Passed</span>
-            <span class="badge info">⚡ GitHub Actions CI/CD</span>
+
+<canvas id="rain"></canvas>
+<div class="bat-signal"></div>
+<div class="scanlines"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-area">
+    <svg class="bat-logo" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 15 C30 5, 5 10, 0 30 C10 25, 20 28, 25 35 C30 20, 38 18, 50 22 C62 18, 70 20, 75 35 C80 28, 90 25, 100 30 C95 10, 70 5, 50 15Z" fill="#f0c420"/>
+      <path d="M50 22 C42 22, 35 28, 33 38 C38 35, 44 34, 50 34 C56 34, 62 35, 67 38 C65 28, 58 22, 50 22Z" fill="#f0c420"/>
+      <path d="M25 35 C22 42, 20 50, 25 55 C30 50, 35 42, 35 38Z" fill="#f0c420"/>
+      <path d="M75 35 C78 42, 80 50, 75 55 C70 50, 65 42, 65 38Z" fill="#f0c420"/>
+    </svg>
+    <div class="title-block">
+      <h1>DevSecOps</h1>
+      <p>Gotham Pipeline // GitHub Actions</p>
+    </div>
+  </div>
+  <div class="status-badge">
+    <div class="status-dot"></div>
+    ALL SYSTEMS OPERATIONAL
+  </div>
+</header>
+
+<!-- TOOLS BAR -->
+<div class="tools-bar">
+  <span class="tools-label">Arsenal</span>
+  {% for tool in pipeline.tools %}
+  <div class="tool-chip">{{ tool.icon }} {{ tool.name }}</div>
+  {% endfor %}
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="section-label">// CI/CD Pipeline Flow</div>
+
+  <div class="pipeline-flow" id="pipelineFlow">
+
+    {% for stage in pipeline.stages %}
+
+    <div class="pipeline-node">
+      <!-- STAGE CARD -->
+      <div class="stage-card {% if stage.strategy == 'matrix' %}matrix-card{% endif %}"
+           data-index="{{ loop.index0 }}"
+           data-duration="{{ stage.duration }}">
+
+        <div class="card-top">
+          <span class="stage-icon">{{ stage.icon }}</span>
+          <div class="stage-status">
+            <div class="dot"></div>
+            {{ stage.status | upper }}
+          </div>
         </div>
 
-        <div class="message">
-            Successfully deployed on server<br>
-            <small>All security scans completed</small>
-        </div>
+        <div class="stage-name">{{ stage.name }}</div>
 
-        <div class="status-box">
-            <div class="status-item">
-                <span>✓</span> SAST Scan: Passed
-            </div>
-            <div class="status-item">
-                <span>✓</span> Dependency Check: Passed
-            </div>
-            <div class="status-item">
-                <span>✓</span> Container Security: Passed
-            </div>
-            <div class="status-item">
-                <span>✓</span> Deployed via GitHub Actions
-            </div>
-        </div>
+        <ul class="job-list">
+          {% for job in stage.jobs %}
+          <li>{{ job.name }}</li>
+          {% endfor %}
+        </ul>
 
-        <div class="footer">
-            Last deployed: <span id="datetime"></span>
+        {% if stage.strategy == 'matrix' %}
+        <div class="matrix-badge">
+          ⚡ MATRIX · py {{ stage.python_versions | join(' / ') }}
         </div>
+        {% endif %}
+
+        <div class="card-footer">
+          <span class="duration">{{ stage.duration }}</span>
+          <div class="progress-bar">
+            <div class="progress-fill" data-width="100"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONNECTOR (not after last) -->
+      {% if not loop.last %}
+      <div class="connector" data-index="{{ loop.index0 }}">
+        <div class="arrow-line arrow-animated"></div>
+      </div>
+      {% endif %}
     </div>
 
-    <script>
-        document.getElementById('datetime').innerHTML = new Date().toLocaleString();
-    </script>
+    {% endfor %}
+
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card" data-delay="0">
+      <div class="stat-num">{{ pipeline.stages | length }}</div>
+      <div class="stat-label">Pipeline Stages</div>
+    </div>
+    <div class="stat-card" data-delay="100">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Tools Integrated</div>
+    </div>
+    <div class="stat-card" data-delay="200">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Python Versions</div>
+    </div>
+    <div class="stat-card" data-delay="300">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Pass Rate</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>GOTHAM CITY // DEVSECOPS COMMAND CENTER</span>
+  <span class="footer-bat">🦇</span>
+  <span>GITHUB ACTIONS // AWS EC2 // DOCKER HUB</span>
+</footer>
+
+<script>
+  // ── RAIN ──
+  const canvas = document.getElementById('rain');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const drops = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    speed: 2 + Math.random() * 4,
+    length: 10 + Math.random() * 20,
+    opacity: 0.1 + Math.random() * 0.4
+  }));
+
+  function drawRain() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drops.forEach(d => {
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - 1, d.y + d.length);
+      ctx.strokeStyle = `rgba(180, 160, 60, ${d.opacity})`;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+      d.y += d.speed;
+      if (d.y > canvas.height) {
+        d.y = -d.length;
+        d.x = Math.random() * canvas.width;
+      }
+    });
+    requestAnimationFrame(drawRain);
+  }
+  drawRain();
+
+  // ── STAGGERED CARD REVEALS ──
+  function revealCards() {
+    const cards = document.querySelectorAll('.stage-card');
+    const connectors = document.querySelectorAll('.connector');
+    const stats = document.querySelectorAll('.stat-card');
+
+    cards.forEach((card, i) => {
+      setTimeout(() => {
+        card.classList.add('revealed');
+        // animate progress bar
+        setTimeout(() => {
+          const fill = card.querySelector('.progress-fill');
+          if (fill) fill.style.width = '100%';
+        }, 200);
+      }, i * 160);
+    });
+
+    connectors.forEach((c, i) => {
+      setTimeout(() => c.classList.add('revealed'), i * 160 + 100);
+    });
+
+    stats.forEach((s, i) => {
+      const delay = parseInt(s.dataset.delay || 0);
+      setTimeout(() => s.classList.add('revealed'), cards.length * 160 + delay + 200);
+    });
+  }
+
+  window.addEventListener('load', revealCards);
+
+  // ── CARD HOVER TOOLTIP ──
+  const cards = document.querySelectorAll('.stage-card');
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      this.style.zIndex = '20';
+    });
+    card.addEventListener('mouseleave', function() {
+      this.style.zIndex = '';
+    });
+  });
+
+  // ── COUNTER ANIMATION ──
+  function animateCounters() {
+    document.querySelectorAll('.stat-num').forEach(el => {
+      const text = el.textContent.trim();
+      const isPercent = text.includes('%');
+      const num = parseInt(text);
+      if (isNaN(num)) return;
+      let current = 0;
+      const step = num / 40;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, num);
+        el.textContent = Math.floor(current) + (isPercent ? '%' : '');
+        if (current >= num) clearInterval(timer);
+      }, 30);
+    });
+  }
+
+  setTimeout(animateCounters, 1800);
+</script>
 </body>
 </html>
