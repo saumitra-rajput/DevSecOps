@@ -46,8 +46,8 @@ jobs:
 
 # CD
   ## Deploy to Production
-  test-deploy:
+  deploy-to-prod:
     needs: [image-scan]
-    uses: ./.github/workflows/test-deploy.yml
+    uses: ./.github/workflows/deploy.yml
     secrets: inherit
 
