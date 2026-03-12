@@ -1,0 +1,7 @@
+# Flake8 configuration for DevSecOps project
+# Default flake8 line length is 79 characters (PEP8 standard)
+# Our pipeline JSON data contains long dictionary lines,
+# so we increase the limit to avoid unnecessary lint failures.
+
+[flake8]
+max-line-length = 120
