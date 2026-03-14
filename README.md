@@ -4,7 +4,7 @@ A fully automated CI/CD DevSecOps pipeline built with **GitHub Actions**, **Dock
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure :shipit: 
 
 ```
 .
